@@ -109,15 +109,18 @@
         </div>
 
         <div class="container hero__content">
+            <div class="hero__badge">
+                <span>🎧</span> Скачай бесплатную демо-версию — без ограничений по времени
+            </div>
             <h1 class="hero__title">
-                <br>
                 Дисторшн,<br>
                 который <span class="gradient-text">рвёт</span><br>
                 всё на части
             </h1>
             <p class="hero__subtitle">
                 VST плагин и аналоговая педаль с одним ДНК.<br>
-                От сливочного овердрайва до тотального хаоса.
+                От сливочного овердрайва до тотального хаоса.<br>
+                <strong>4 режима × Zero Latency × MIDI CC × Apple Silicon native</strong>
             </p>
             <div class="hero__actions">
                 <a href="#pricing" class="btn btn--primary btn--lg">
@@ -162,13 +165,41 @@
         </div>
     </section>
 
+    <!-- DAW Compatibility -->
+    <section class="compat">
+        <div class="container">
+            <div class="compat__inner">
+                <h3 class="compat__title">Работает в любой DAW</h3>
+                <div class="compat__grid">
+                    <div class="compat__item">
+                        <span class="compat__format">VST3</span>
+                        <span class="compat__os">Win / Mac</span>
+                    </div>
+                    <div class="compat__item">
+                        <span class="compat__format">AU</span>
+                        <span class="compat__os">macOS</span>
+                    </div>
+                    <div class="compat__item">
+                        <span class="compat__format">AAX</span>
+                        <span class="compat__os">Pro Tools</span>
+                    </div>
+                    <div class="compat__item compat__item--accent">
+                        <span class="compat__format">Apple Silicon</span>
+                        <span class="compat__os">Native M1/M2/M3/M4</span>
+                    </div>
+                </div>
+                <p class="compat__daws">Logic Pro · Ableton Live · FL Studio · Cubase · Nuendo · Studio One · REAPER · Pro Tools · Reason · Maschine · Cakewalk</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Features -->
     <section class="features" id="features">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Возможности</span>
                 <h2 class="section-title">Всё, что нужно для <span class="gradient-text">идеального</span> перегруза</h2>
-                <p class="section-desc">Четыре алгоритма сатурации, моделирование аналоговых схем и бесконечные возможности звукового дизайна</p>
+                <p class="section-desc">Четыре алгоритма сатурации, моделирование аналоговых схем и бесконечные возможности звукового дизайна. Всё, чего не хватает у конкурентов — в одном плагине.</p>
             </div>
             <div class="features__grid">
                 <div class="feature-card feature-card--large">
@@ -215,6 +246,31 @@
                     <p>Масштабируемый интерфейс от 50% до 200%. Идеально на любом мониторе, включая 4K и Retina.</p>
                 </div>
             </div>
+
+            <!-- Coming Soon -->
+            <div class="coming-soon">
+                <h3 class="coming-soon__title">🚀 Скоро в обновлении <span class="gradient-text">v2.0</span></h3>
+                <div class="coming-soon__grid">
+                    <div class="coming-soon__card">
+                        <span class="coming-soon__badge">COMING SOON</span>
+                        <div class="feature-card__icon">📊</div>
+                        <h4>Мультибенд (3 полосы)</h4>
+                        <p>Разделяй сигнал на Low / Mid / High и обрабатывай каждую полосу независимо. Как у Ohmicide, но проще.</p>
+                    </div>
+                    <div class="coming-soon__card">
+                        <span class="coming-soon__badge">COMING SOON</span>
+                        <div class="feature-card__icon">🌊</div>
+                        <h4>LFO-модуляция</h4>
+                        <p>Два LFO на параметр с настраиваемой формой волны, скоростью и глубиной. Живой, дышащий дисторшн.</p>
+                    </div>
+                    <div class="coming-soon__card">
+                        <span class="coming-soon__badge">COMING SOON</span>
+                        <div class="feature-card__icon">💎</div>
+                        <h4>Exciter + Compressor</h4>
+                        <p>Встроенный эксайтер для добавления присутствия и компрессор для панчевых ударных. All-in-one обработка.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -224,7 +280,7 @@
             <div class="section-header">
                 <span class="section-tag">Демо</span>
                 <h2 class="section-title">Послушай, как это <span class="gradient-text">звучит</span></h2>
-                <p class="section-desc">Нажми на карточку, чтобы услышать разницу между чистым и обработанным сигналом</p>
+                <p class="section-desc">Нажми на карточку, чтобы услышать разницу между чистым и обработанным сигналом. Первый проход — DRY, второй — через PERDAK. Без других эффектов.</p>
             </div>
             <div class="sound__grid">
                 <div class="sound-card" data-mode="tube">
@@ -430,6 +486,102 @@
         </div>
     </section>
 
+    <!-- VS Competitors -->
+    <section class="comparison">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Сравнение</span>
+                <h2 class="section-title">Почему <span class="gradient-text">PERDAK</span>, а не другие?</h2>
+                <p class="section-desc">Мы изучили конкурентов и знаем, чем отличаемся</p>
+            </div>
+            <div class="comparison__table-wrap">
+                <table class="comparison__table">
+                    <thead>
+                        <tr>
+                            <th>Параметр</th>
+                            <th class="comparison__highlight">PERDAK</th>
+                            <th>Ohmicide[S]</th>
+                            <th>BeatKrusher V2</th>
+                            <th>PRESSURE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Цена</td>
+                            <td class="comparison__highlight"><strong>$49</strong></td>
+                            <td>€99</td>
+                            <td>€49.99</td>
+                            <td>€39</td>
+                        </tr>
+                        <tr>
+                            <td>Режимы дисторшна</td>
+                            <td class="comparison__highlight">4</td>
+                            <td>111</td>
+                            <td>Несколько</td>
+                            <td>14</td>
+                        </tr>
+                        <tr>
+                            <td>Встроенный EQ</td>
+                            <td class="comparison__highlight">✅ 3-band</td>
+                            <td>✅ Фильтры</td>
+                            <td>✅ По полосам</td>
+                            <td>✅ Low Cut</td>
+                        </tr>
+                        <tr>
+                            <td>Zero Latency</td>
+                            <td class="comparison__highlight">✅</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>✅</td>
+                        </tr>
+                        <tr>
+                            <td>MIDI-маппинг</td>
+                            <td class="comparison__highlight">✅</td>
+                            <td>✅ Macros²</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                        </tr>
+                        <tr>
+                            <td>Apple Silicon</td>
+                            <td class="comparison__highlight">✅ Native</td>
+                            <td>✅</td>
+                            <td>❌</td>
+                            <td>✅</td>
+                        </tr>
+                        <tr>
+                            <td>Resizable UI</td>
+                            <td class="comparison__highlight">✅ 50–200%</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td>Аппаратная версия</td>
+                            <td class="comparison__highlight">✅ Педаль</td>
+                            <td>✅ Eurorack</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                        </tr>
+                        <tr>
+                            <td>Бандл плагин + железо</td>
+                            <td class="comparison__highlight">✅ $149</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                            <td>❌</td>
+                        </tr>
+                        <tr>
+                            <td>Пресеты</td>
+                            <td class="comparison__highlight">50+</td>
+                            <td>108</td>
+                            <td>30 (Serum)</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
     <!-- Pricing -->
     <section class="pricing" id="pricing">
         <div class="container">
@@ -511,6 +663,51 @@
                 <div class="cta__actions">
                     <a href="#" class="btn btn--primary btn--lg">Скачать демо бесплатно</a>
                     <a href="#pricing" class="btn btn--outline btn--lg">Смотреть цены</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Specs -->
+    <section class="specs">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Спецификации</span>
+                <h2 class="section-title">Технические <span class="gradient-text">характеристики</span></h2>
+            </div>
+            <div class="specs__grid">
+                <div class="specs__card">
+                    <h4>🖥️ Операционные системы</h4>
+                    <ul>
+                        <li>macOS Monterey 12+ (Intel & Apple Silicon native)</li>
+                        <li>Windows 10 / 11 (64-bit)</li>
+                    </ul>
+                </div>
+                <div class="specs__card">
+                    <h4>🔌 Форматы плагинов</h4>
+                    <ul>
+                        <li>VST3 (64-bit) — Windows & macOS</li>
+                        <li>AU (64-bit) — macOS</li>
+                        <li>AAX (64-bit) — Pro Tools</li>
+                    </ul>
+                </div>
+                <div class="specs__card">
+                    <h4>⚙️ Требования</h4>
+                    <ul>
+                        <li>2 GB RAM (4 GB рекомендуется)</li>
+                        <li>Двухъядерный CPU 2.0 GHz+</li>
+                        <li>200 MB свободного места</li>
+                        <li>Дисплей 1280×720+</li>
+                    </ul>
+                </div>
+                <div class="specs__card">
+                    <h4>🎵 Поддерживаемые DAW</h4>
+                    <ul>
+                        <li>Ableton Live 11+ · Logic Pro 10.8+</li>
+                        <li>FL Studio 21+ · Cubase 13+</li>
+                        <li>Pro Tools 2023+ · Studio One 6+</li>
+                        <li>REAPER 7+ · Reason 12+ · Cakewalk</li>
+                    </ul>
                 </div>
             </div>
         </div>

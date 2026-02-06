@@ -87,7 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add fade-in class and observe elements
     document.querySelectorAll(
         '.feature-card, .sound-card, .testimonial-card, .price-card, ' +
-        '.section-header, .pedal__visual, .pedal__info, .cta__inner, .hero__stats'
+        '.section-header, .pedal__visual, .pedal__info, .cta__inner, .hero__stats, ' +
+        '.coming-soon__card, .comparison__table-wrap, .specs__card, .compat__inner'
     ).forEach(el => {
         el.classList.add('fade-in');
         observer.observe(el);
