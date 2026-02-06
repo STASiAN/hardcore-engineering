@@ -378,22 +378,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Knob auto-rotation (spinning knobs) ---
-    document.querySelectorAll('.knob').forEach((knob, index) => {
+    // --- Knob interaction (user-controlled) ---
+    document.querySelectorAll('.knob').forEach(knob => {
         let isDragging = false;
         let startY;
         let startValue;
-        let autoRotate = true;
-
-        // Each knob spins at a different speed and phase
-        const speeds = [0.0008, 0.0006, 0.0009, 0.0005];
-        const phases = [0, 1.5, 3.0, 4.5];
-        const ranges = [[15, 85], [20, 70], [30, 95], [10, 80]];
-        const speed = speeds[index] || 0.0006;
-        const phase = phases[index] || 0;
-        const [minVal, maxVal] = ranges[index] || [20, 80];
-
-        knob.classList.add('knob--spinning');
 
         const updateKnob = (value) => {
             value = Math.max(0, Math.min(100, value));
@@ -407,23 +396,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Auto-rotation loop
-        const animate = () => {
-            if (autoRotate) {
-                const time = performance.now();
-                const mid = (minVal + maxVal) / 2;
-                const amp = (maxVal - minVal) / 2;
-                const value = mid + amp * Math.sin(time * speed + phase);
-                updateKnob(value);
-            }
-            requestAnimationFrame(animate);
-        };
-        requestAnimationFrame(animate);
+        // Set initial position from data-value
+        updateKnob(parseInt(knob.dataset.value) || 50);
 
-        // Manual drag override
+        // Mouse drag
         knob.addEventListener('mousedown', (e) => {
             isDragging = true;
-            autoRotate = false;
             startY = e.clientY;
             startValue = parseInt(knob.dataset.value) || 50;
             document.body.style.cursor = 'ns-resize';
@@ -440,15 +418,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isDragging) {
                 isDragging = false;
                 document.body.style.cursor = '';
-                // Resume auto-rotation after 2 seconds
-                setTimeout(() => { autoRotate = true; }, 2000);
             }
         });
 
         // Touch support
         knob.addEventListener('touchstart', (e) => {
             isDragging = true;
-            autoRotate = false;
             startY = e.touches[0].clientY;
             startValue = parseInt(knob.dataset.value) || 50;
             e.preventDefault();
@@ -463,7 +438,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('touchend', () => {
             if (isDragging) {
                 isDragging = false;
-                setTimeout(() => { autoRotate = true; }, 2000);
             }
         });
     });
