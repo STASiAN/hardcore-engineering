@@ -519,13 +519,12 @@ img {
     inset: 0;
     border-radius: 50%;
     background: conic-gradient(
-        from 225deg,
+        from 0deg,
         var(--accent) 0deg,
         var(--accent) var(--angle, 0deg),
-        transparent var(--angle, 0deg),
-        transparent 270deg
+        transparent var(--angle, 0deg)
     );
-    opacity: 0.3;
+    opacity: 0.35;
 }
 
 .knob__indicator {
