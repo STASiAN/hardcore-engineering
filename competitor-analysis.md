@@ -1,13 +1,13 @@
 # Анализ конкурентов PERDAK
 
-> Дата анализа: 6 февраля 2026  
+> Дата анализа: 6 февраля 2026
 > Прямые конкуренты в нише дисторшн-плагинов для электронной и тяжёлой музыки
 
 ---
 
 ## 1. Ohmicide[S] — Ohmforce
 
-**Сайт:** https://ohmforce.com/products/ohmicide-s  
+**Сайт:** https://ohmforce.com/products/ohmicide-s
 **Цена:** €99 (плагин) / €149 (бандл с Ohmboyz Infinity)
 
 ### Ключевые особенности
@@ -51,7 +51,7 @@
 
 ## 2. The BeatKrusher V2 — NS Audio
 
-**Сайт:** https://shop.ns-audio.com/product/the-beatkrusher-the-ultimate-distortion/  
+**Сайт:** https://shop.ns-audio.com/product/the-beatkrusher-the-ultimate-distortion/
 **Цена:** €49.99 (было €69.99)
 
 ### Ключевые особенности
@@ -92,7 +92,7 @@
 
 ## 3. PRESSURE — Definition of Hard Techno (DOHT)
 
-**Сайт:** https://definitionofhardtechno.com/products/pressure-doht-plugin  
+**Сайт:** https://definitionofhardtechno.com/products/pressure-doht-plugin
 **Цена:** €39
 
 ### Ключевые особенности
