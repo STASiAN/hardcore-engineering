@@ -59,7 +59,7 @@
                 </div>
                 <div class="plugin-ui__knobs">
                     <div class="knob-group">
-                        <div class="knob" data-value="65">
+                        <div class="knob" data-value="65" data-param="drive">
                             <div class="knob__track">
                                 <div class="knob__fill" style="--value: 65"></div>
                             </div>
@@ -68,7 +68,7 @@
                         <span class="knob-label">DRIVE</span>
                     </div>
                     <div class="knob-group">
-                        <div class="knob" data-value="40">
+                        <div class="knob" data-value="40" data-param="tone">
                             <div class="knob__track">
                                 <div class="knob__fill" style="--value: 40"></div>
                             </div>
@@ -77,7 +77,7 @@
                         <span class="knob-label">TONE</span>
                     </div>
                     <div class="knob-group">
-                        <div class="knob" data-value="75">
+                        <div class="knob" data-value="75" data-param="mix">
                             <div class="knob__track">
                                 <div class="knob__fill" style="--value: 75"></div>
                             </div>
@@ -86,7 +86,7 @@
                         <span class="knob-label">MIX</span>
                     </div>
                     <div class="knob-group">
-                        <div class="knob" data-value="50">
+                        <div class="knob" data-value="50" data-param="level">
                             <div class="knob__track">
                                 <div class="knob__fill" style="--value: 50"></div>
                             </div>
@@ -96,14 +96,23 @@
                     </div>
                 </div>
                 <div class="plugin-ui__modes">
-                    <button class="mode-btn">TUBE</button>
-                    <button class="mode-btn mode-btn--active">FUZZ</button>
-                    <button class="mode-btn">CLIP</button>
-                    <button class="mode-btn">FOLD</button>
+                    <button class="mode-btn" data-mode="tube">TUBE</button>
+                    <button class="mode-btn mode-btn--active" data-mode="fuzz">FUZZ</button>
+                    <button class="mode-btn" data-mode="clip">CLIP</button>
+                    <button class="mode-btn" data-mode="fold">FOLD</button>
                 </div>
                 <div class="plugin-ui__meter">
                     <div class="meter-bar"><div class="meter-bar__fill"></div></div>
                     <div class="meter-bar"><div class="meter-bar__fill"></div></div>
+                </div>
+                <div class="plugin-ui__power">
+                    <button class="power-btn" id="powerBtn" aria-label="Power">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="2" x2="12" y2="12"/><path d="M16.24 7.76a6 6 0 11-8.48 0"/></svg>
+                    </button>
+                    <div class="power-hint" id="powerHint">
+                        <span class="power-hint__arrow">↑</span>
+                        <span class="power-hint__text">turn me on!</span>
+                    </div>
                 </div>
             </div>
         </div>

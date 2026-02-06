@@ -608,6 +608,98 @@ img {
     to { width: 85%; }
 }
 
+/* Power button */
+.plugin-ui__power {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.power-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+}
+
+.power-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent-light);
+}
+
+.power-btn--active {
+    background: rgba(255, 77, 0, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 20px rgba(255, 77, 0, 0.3), inset 0 0 8px rgba(255, 77, 0, 0.1);
+}
+
+.power-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: hintBounce 1.5s ease-in-out infinite;
+}
+
+.power-hint__arrow {
+    font-size: 1.2rem;
+    color: var(--accent);
+    animation: arrowPulse 1s ease-in-out infinite;
+}
+
+.power-hint__text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent-light);
+    text-transform: uppercase;
+}
+
+.power-hint--hidden {
+    opacity: 0;
+    transition: opacity 0.5s var(--ease);
+    pointer-events: none;
+}
+
+@keyframes hintBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+}
+
+@keyframes arrowPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* Plugin active state */
+.plugin-ui--active {
+    box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(255, 77, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.plugin-ui--active .meter-bar__fill {
+    animation: meter 0.4s ease-in-out infinite alternate;
+}
+
+.plugin-ui--inactive .meter-bar__fill {
+    animation: none;
+    width: 0;
+}
+
 /* --- Logos --- */
 .logos {
     padding: 60px 0;

@@ -104,341 +104,276 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Web Audio API Sound Engine ---
+    // ========================================
+    // PERDAK LIVE ENGINE
+    // Knobs, modes, power button all control
+    // a continuous TR-909 kick + distortion loop
+    // ========================================
+
     let audioCtx = null;
     let currentSource = null;
+    let pluginIsOn = false;
+    let activeMode = 'fuzz';
+    let loopTimer = null;
+
+    // Knob state (0-100)
+    const knobState = { drive: 65, tone: 40, mix: 75, level: 50 };
 
     function getAudioContext() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         return audioCtx;
     }
 
-    // --- TR-909 Kick Synthesis + Distortion ---
-
+    // --- Distortion curves ---
     function makeDistortionCurve(amount) {
-        const n = 8192;
-        const curve = new Float32Array(n);
-        for (let i = 0; i < n; i++) {
-            const x = (i * 2) / n - 1;
-            curve[i] = ((Math.PI + amount) * x) / (Math.PI + amount * Math.abs(x));
-        }
-        return curve;
+        const n = 8192, c = new Float32Array(n);
+        for (let i = 0; i < n; i++) { const x = (i*2)/n-1; c[i] = ((Math.PI+amount)*x)/(Math.PI+amount*Math.abs(x)); }
+        return c;
     }
-
     function makeFuzzCurve(intensity) {
-        const n = 8192;
-        const curve = new Float32Array(n);
-        for (let i = 0; i < n; i++) {
-            const x = (i * 2) / n - 1;
-            const boosted = x * intensity;
-            curve[i] = boosted > 0
-                ? 1 - Math.exp(-boosted * 3)
-                : -(1 - Math.exp(boosted * 2)) * 0.9;
-        }
-        return curve;
+        const n = 8192, c = new Float32Array(n);
+        for (let i = 0; i < n; i++) { const x = (i*2)/n-1, b = x*intensity; c[i] = b>0 ? 1-Math.exp(-b*3) : -(1-Math.exp(b*2))*0.9; }
+        return c;
     }
-
     function makeHardClipCurve(threshold) {
-        const n = 8192;
-        const curve = new Float32Array(n);
-        for (let i = 0; i < n; i++) {
-            const x = (i * 2) / n - 1;
-            curve[i] = Math.max(-threshold, Math.min(threshold, x * 20));
-        }
-        return curve;
+        const n = 8192, c = new Float32Array(n);
+        for (let i = 0; i < n; i++) { const x = (i*2)/n-1; c[i] = Math.max(-threshold, Math.min(threshold, x*20)); }
+        return c;
     }
-
     function makeFoldCurve(folds) {
-        const n = 8192;
-        const curve = new Float32Array(n);
-        for (let i = 0; i < n; i++) {
-            const x = (i * 2) / n - 1;
-            curve[i] = Math.sin(x * Math.PI * folds);
-        }
-        return curve;
+        const n = 8192, c = new Float32Array(n);
+        for (let i = 0; i < n; i++) { const x = (i*2)/n-1; c[i] = Math.sin(x*Math.PI*folds); }
+        return c;
     }
 
-    // Synthesize a single TR-909-style kick
+    // --- TR-909 kick ---
     function create909Kick(ctx, output, time, tune, decay, level) {
-        // --- Pitch oscillator (sine body) ---
         const osc = ctx.createOscillator();
         osc.type = 'sine';
-        const startFreq = tune * 4.5;  // initial pitch click
-        const endFreq = tune;
-        osc.frequency.setValueAtTime(startFreq, time);
-        osc.frequency.exponentialRampToValueAtTime(endFreq, time + 0.04);
-
-        // --- Amplitude envelope ---
+        osc.frequency.setValueAtTime(tune * 4.5, time);
+        osc.frequency.exponentialRampToValueAtTime(tune, time + 0.04);
         const oscGain = ctx.createGain();
         oscGain.gain.setValueAtTime(level, time);
         oscGain.gain.setValueAtTime(level * 0.9, time + 0.01);
         oscGain.gain.exponentialRampToValueAtTime(0.001, time + decay);
 
-        // --- Click / transient (noise burst) ---
         const clickLen = 0.015;
-        const bufferSize = Math.ceil(ctx.sampleRate * clickLen);
-        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.15));
-        }
-        const click = ctx.createBufferSource();
-        click.buffer = noiseBuffer;
+        const bufSz = Math.ceil(ctx.sampleRate * clickLen);
+        const nBuf = ctx.createBuffer(1, bufSz, ctx.sampleRate);
+        const d = nBuf.getChannelData(0);
+        for (let i = 0; i < bufSz; i++) d[i] = (Math.random()*2-1) * Math.exp(-i/(bufSz*0.15));
+        const click = ctx.createBufferSource(); click.buffer = nBuf;
+        const cFilt = ctx.createBiquadFilter(); cFilt.type = 'highpass'; cFilt.frequency.setValueAtTime(800, time);
+        const cGain = ctx.createGain(); cGain.gain.setValueAtTime(level*0.6, time); cGain.gain.exponentialRampToValueAtTime(0.001, time+clickLen);
 
-        const clickFilter = ctx.createBiquadFilter();
-        clickFilter.type = 'highpass';
-        clickFilter.frequency.setValueAtTime(800, time);
-        clickFilter.Q.setValueAtTime(1, time);
+        const osc2 = ctx.createOscillator(); osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(tune*4.5*1.5, time); osc2.frequency.exponentialRampToValueAtTime(tune*0.5, time+0.03);
+        const o2g = ctx.createGain(); o2g.gain.setValueAtTime(level*0.25, time); o2g.gain.exponentialRampToValueAtTime(0.001, time+decay*0.5);
 
-        const clickGain = ctx.createGain();
-        clickGain.gain.setValueAtTime(level * 0.6, time);
-        clickGain.gain.exponentialRampToValueAtTime(0.001, time + clickLen);
-
-        // --- Second harmonic ---
-        const osc2 = ctx.createOscillator();
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(startFreq * 1.5, time);
-        osc2.frequency.exponentialRampToValueAtTime(endFreq * 0.5, time + 0.03);
-
-        const osc2Gain = ctx.createGain();
-        osc2Gain.gain.setValueAtTime(level * 0.25, time);
-        osc2Gain.gain.exponentialRampToValueAtTime(0.001, time + decay * 0.5);
-
-        // Connect
-        osc.connect(oscGain);
-        oscGain.connect(output);
-
-        osc2.connect(osc2Gain);
-        osc2Gain.connect(output);
-
-        click.connect(clickFilter);
-        clickFilter.connect(clickGain);
-        clickGain.connect(output);
-
-        osc.start(time);
-        osc.stop(time + decay + 0.05);
-        osc2.start(time);
-        osc2.stop(time + decay * 0.5 + 0.05);
+        osc.connect(oscGain); oscGain.connect(output);
+        osc2.connect(o2g); o2g.connect(output);
+        click.connect(cFilt); cFilt.connect(cGain); cGain.connect(output);
+        osc.start(time); osc.stop(time+decay+0.05);
+        osc2.start(time); osc2.stop(time+decay*0.5+0.05);
         click.start(time);
-
         return [osc, osc2, click];
     }
 
-    function playDistortionDemo(mode) {
-        const ctx = getAudioContext();
-        const now = ctx.currentTime;
-
-        // Master output
-        const masterGain = ctx.createGain();
-        masterGain.gain.setValueAtTime(0.35, now);
-        masterGain.connect(ctx.destination);
-
-        // Limiter
-        const limiter = ctx.createDynamicsCompressor();
-        limiter.threshold.setValueAtTime(-6, now);
-        limiter.knee.setValueAtTime(3, now);
-        limiter.ratio.setValueAtTime(20, now);
-        limiter.attack.setValueAtTime(0.001, now);
-        limiter.release.setValueAtTime(0.05, now);
-        limiter.connect(masterGain);
-
-        // Post-distortion EQ
-        const postEQ = ctx.createBiquadFilter();
-        postEQ.type = 'peaking';
-        postEQ.connect(limiter);
-
-        // Distortion chain (stacked for LOTS of distortion)
-        const dist1 = ctx.createWaveShaper();
-        dist1.oversample = '4x';
-        const dist2 = ctx.createWaveShaper();
-        dist2.oversample = '4x';
-        const dist3 = ctx.createWaveShaper();
-        dist3.oversample = '4x';
-
-        dist3.connect(postEQ);
-        dist2.connect(dist3);
-        dist1.connect(dist2);
-
-        // Pre-distortion drive
-        const driveGain = ctx.createGain();
-        driveGain.connect(dist1);
-
-        // Pre-EQ (shape the kick before distortion)
-        const preEQ = ctx.createBiquadFilter();
-        preEQ.type = 'peaking';
-        preEQ.connect(driveGain);
-
-        // Mode configs — all based on TR-909 kick with different distortion
+    // --- Mode configs (same used by both plugin-ui and sound cards) ---
+    function getModeConfig(mode) {
         const configs = {
             tube: {
-                drive: 3, curve1: makeDistortionCurve(8), curve2: makeDistortionCurve(4), curve3: makeDistortionCurve(2),
-                preFreq: 100, preQ: 2, preGainDb: 6,
-                postFreq: 2500, postQ: 0.8, postGainDb: 3,
-                kickTune: 52, kickDecay: 0.45, kickLevel: 0.9,
-                bpm: 130,
+                baseDrive: 3, curve1Fn: () => makeDistortionCurve(8), curve2Fn: () => makeDistortionCurve(4), curve3Fn: () => makeDistortionCurve(2),
+                preFreq: 100, preQ: 2, preGainDb: 6, postFreq: 2500, postQ: 0.8, postGainDb: 3,
+                kickTune: 52, kickDecay: 0.45, kickLevel: 0.9, bpm: 130,
                 pattern: [1,0,0,0, 1,0,0,0, 1,0,0,1, 0,0,1,0],
                 accentPattern: [1,0,0,0, 0.8,0,0,0, 1,0,0,0.6, 0,0,0.7,0]
             },
             fuzz: {
-                drive: 8, curve1: makeFuzzCurve(12), curve2: makeFuzzCurve(8), curve3: makeDistortionCurve(15),
-                preFreq: 150, preQ: 3, preGainDb: 12,
-                postFreq: 1800, postQ: 1.5, postGainDb: 6,
-                kickTune: 48, kickDecay: 0.55, kickLevel: 1.0,
-                bpm: 145,
+                baseDrive: 8, curve1Fn: () => makeFuzzCurve(12), curve2Fn: () => makeFuzzCurve(8), curve3Fn: () => makeDistortionCurve(15),
+                preFreq: 150, preQ: 3, preGainDb: 12, postFreq: 1800, postQ: 1.5, postGainDb: 6,
+                kickTune: 48, kickDecay: 0.55, kickLevel: 1.0, bpm: 145,
                 pattern: [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
                 accentPattern: [1,0,0.7,0, 0.9,0,0.6,0, 1,0,0.7,0, 0.8,0,0.6,0]
             },
             clip: {
-                drive: 15, curve1: makeHardClipCurve(0.3), curve2: makeHardClipCurve(0.2), curve3: makeDistortionCurve(20),
-                preFreq: 200, preQ: 4, preGainDb: 18,
-                postFreq: 3500, postQ: 1, postGainDb: 8,
-                kickTune: 44, kickDecay: 0.35, kickLevel: 1.0,
-                bpm: 170,
+                baseDrive: 15, curve1Fn: () => makeHardClipCurve(0.3), curve2Fn: () => makeHardClipCurve(0.2), curve3Fn: () => makeDistortionCurve(20),
+                preFreq: 200, preQ: 4, preGainDb: 18, postFreq: 3500, postQ: 1, postGainDb: 8,
+                kickTune: 44, kickDecay: 0.35, kickLevel: 1.0, bpm: 170,
                 pattern: [1,0,1,1, 0,1,1,0, 1,1,0,1, 1,0,1,1],
                 accentPattern: [1,0,0.8,0.9, 0,0.7,0.8,0, 1,0.9,0,0.8, 0.9,0,0.7,1]
             },
             fold: {
-                drive: 6, curve1: makeFoldCurve(5), curve2: makeFoldCurve(3), curve3: makeFoldCurve(7),
-                preFreq: 120, preQ: 2, preGainDb: 8,
-                postFreq: 4000, postQ: 2, postGainDb: 4,
-                kickTune: 55, kickDecay: 0.5, kickLevel: 0.85,
-                bpm: 140,
+                baseDrive: 6, curve1Fn: () => makeFoldCurve(5), curve2Fn: () => makeFoldCurve(3), curve3Fn: () => makeFoldCurve(7),
+                preFreq: 120, preQ: 2, preGainDb: 8, postFreq: 4000, postQ: 2, postGainDb: 4,
+                kickTune: 55, kickDecay: 0.5, kickLevel: 0.85, bpm: 140,
                 pattern: [1,0,0,1, 0,0,1,0, 0,1,0,0, 1,0,0,1],
                 accentPattern: [1,0,0,0.7, 0,0,0.8,0, 0,0.6,0,0, 0.9,0,0,0.7]
             }
         };
+        return configs[mode] || configs.tube;
+    }
 
-        const cfg = configs[mode] || configs.tube;
+    // --- Play one loop of 909 kicks with knob-controlled params ---
+    function playLoop(mode, knobs) {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const cfg = getModeConfig(mode);
 
-        // Setup distortion chain
-        driveGain.gain.setValueAtTime(cfg.drive, now);
-        dist1.curve = cfg.curve1;
-        dist2.curve = cfg.curve2;
-        dist3.curve = cfg.curve3;
+        // Knob mappings (0-100 → real values)
+        const driveAmount = (knobs.drive / 100) * cfg.baseDrive * 3;  // drive knob scales heavily
+        const toneFreq = 800 + (knobs.tone / 100) * 6000;            // 800–6800 Hz LP
+        const mixWet = knobs.mix / 100;                                // 0=dry, 1=full distortion
+        const levelVol = (knobs.level / 100) * 0.5;                   // 0–0.5
 
-        preEQ.frequency.setValueAtTime(cfg.preFreq, now);
-        preEQ.Q.setValueAtTime(cfg.preQ, now);
-        preEQ.gain.setValueAtTime(cfg.preGainDb, now);
+        // Master
+        const master = ctx.createGain();
+        master.gain.setValueAtTime(levelVol, now);
+        master.connect(ctx.destination);
 
+        // Limiter
+        const limiter = ctx.createDynamicsCompressor();
+        limiter.threshold.setValueAtTime(-6, now);
+        limiter.knee.setValueAtTime(3, now); limiter.ratio.setValueAtTime(20, now);
+        limiter.attack.setValueAtTime(0.001, now); limiter.release.setValueAtTime(0.05, now);
+        limiter.connect(master);
+
+        // Dry/Wet mixer
+        const wetGain = ctx.createGain();
+        wetGain.gain.setValueAtTime(mixWet, now);
+        const dryGain = ctx.createGain();
+        dryGain.gain.setValueAtTime(1 - mixWet, now);
+        wetGain.connect(limiter);
+        dryGain.connect(limiter);
+
+        // Tone (post-distortion LP)
+        const toneFilter = ctx.createBiquadFilter();
+        toneFilter.type = 'lowpass';
+        toneFilter.frequency.setValueAtTime(toneFreq, now);
+        toneFilter.Q.setValueAtTime(0.7, now);
+        toneFilter.connect(wetGain);
+
+        // Post EQ
+        const postEQ = ctx.createBiquadFilter();
+        postEQ.type = 'peaking';
         postEQ.frequency.setValueAtTime(cfg.postFreq, now);
         postEQ.Q.setValueAtTime(cfg.postQ, now);
         postEQ.gain.setValueAtTime(cfg.postGainDb, now);
+        postEQ.connect(toneFilter);
 
-        // Schedule 909 kick pattern (2 bars = 16 steps × 2)
-        const stepDur = 60 / cfg.bpm / 4; // 16th note duration
+        // 3x stacked distortion
+        const dist1 = ctx.createWaveShaper(); dist1.oversample = '4x'; dist1.curve = cfg.curve1Fn();
+        const dist2 = ctx.createWaveShaper(); dist2.oversample = '4x'; dist2.curve = cfg.curve2Fn();
+        const dist3 = ctx.createWaveShaper(); dist3.oversample = '4x'; dist3.curve = cfg.curve3Fn();
+        dist3.connect(postEQ); dist2.connect(dist3); dist1.connect(dist2);
+
+        // Drive gain
+        const drive = ctx.createGain();
+        drive.gain.setValueAtTime(driveAmount, now);
+        drive.connect(dist1);
+
+        // Pre EQ
+        const preEQ = ctx.createBiquadFilter();
+        preEQ.type = 'peaking';
+        preEQ.frequency.setValueAtTime(cfg.preFreq, now);
+        preEQ.Q.setValueAtTime(cfg.preQ, now);
+        preEQ.gain.setValueAtTime(cfg.preGainDb, now);
+        preEQ.connect(drive);
+        preEQ.connect(dryGain); // dry path
+
+        // Schedule kicks
+        const stepDur = 60 / cfg.bpm / 4;
+        const totalSteps = 16;
         const allNodes = [];
-        const totalSteps = 32;
 
         for (let i = 0; i < totalSteps; i++) {
             const patIdx = i % cfg.pattern.length;
             if (cfg.pattern[patIdx] === 0) continue;
-
             const hitTime = now + i * stepDur;
             const accent = cfg.accentPattern[patIdx] || 1;
-            const nodes = create909Kick(
-                ctx, preEQ, hitTime,
-                cfg.kickTune,
-                cfg.kickDecay * (0.7 + accent * 0.3),
-                cfg.kickLevel * accent
-            );
+            const nodes = create909Kick(ctx, preEQ, hitTime, cfg.kickTune, cfg.kickDecay*(0.7+accent*0.3), cfg.kickLevel*accent);
             allNodes.push(...nodes);
         }
 
         const totalDur = totalSteps * stepDur;
-        masterGain.gain.setValueAtTime(0.35, now + totalDur - 0.3);
-        masterGain.gain.linearRampToValueAtTime(0, now + totalDur);
+        master.gain.setValueAtTime(levelVol, now + totalDur - 0.05);
+        master.gain.linearRampToValueAtTime(levelVol * 0.95, now + totalDur);
 
         return {
             stop: () => {
                 allNodes.forEach(n => { try { n.stop(); } catch(e) {} });
-                masterGain.gain.cancelScheduledValues(ctx.currentTime);
-                masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.03);
+                master.gain.cancelScheduledValues(ctx.currentTime);
+                master.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.03);
             },
             duration: totalDur * 1000
         };
     }
 
-    // --- Sound card play with real audio ---
-    document.querySelectorAll('.sound-card').forEach(card => {
-        let isPlaying = false;
-        let playTimeout = null;
+    // --- Continuous loop manager ---
+    function startPluginLoop() {
+        if (!pluginIsOn) return;
+        if (currentSource) currentSource.stop();
 
-        card.addEventListener('click', () => {
-            const playBtn = card.querySelector('.sound-card__play');
-            const mode = card.dataset.mode;
+        currentSource = playLoop(activeMode, knobState);
 
-            if (isPlaying) {
-                // Stop
-                isPlaying = false;
-                card.classList.remove('playing');
-                if (currentSource) {
-                    currentSource.stop();
-                    currentSource = null;
-                }
-                if (playTimeout) clearTimeout(playTimeout);
-                playBtn.innerHTML =
+        loopTimer = setTimeout(() => {
+            if (pluginIsOn) startPluginLoop();
+        }, currentSource.duration - 50);
+    }
+
+    function stopPluginLoop() {
+        if (loopTimer) { clearTimeout(loopTimer); loopTimer = null; }
+        if (currentSource) { currentSource.stop(); currentSource = null; }
+    }
+
+    // --- Power button ---
+    const powerBtn = document.getElementById('powerBtn');
+    const powerHint = document.getElementById('powerHint');
+    const pluginUI = document.querySelector('.plugin-ui');
+
+    // Start with inactive state
+    pluginUI.classList.add('plugin-ui--inactive');
+
+    powerBtn.addEventListener('click', () => {
+        pluginIsOn = !pluginIsOn;
+        powerBtn.classList.toggle('power-btn--active', pluginIsOn);
+        pluginUI.classList.toggle('plugin-ui--active', pluginIsOn);
+        pluginUI.classList.toggle('plugin-ui--inactive', !pluginIsOn);
+        powerHint.classList.add('power-hint--hidden');
+
+        if (pluginIsOn) {
+            // Stop any sound card that might be playing
+            document.querySelectorAll('.sound-card.playing').forEach(c => {
+                c.classList.remove('playing');
+                c.querySelector('.sound-card__play').innerHTML =
                     '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>';
-                return;
-            }
-
-            // Stop all other playing cards
-            document.querySelectorAll('.sound-card').forEach(c => {
-                if (c !== card) {
-                    c.classList.remove('playing');
-                    c.querySelector('.sound-card__play').innerHTML =
-                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>';
-                }
             });
-            if (currentSource) {
-                currentSource.stop();
-                currentSource = null;
-            }
-
-            // Play
-            isPlaying = true;
-            card.classList.add('playing');
-            playBtn.innerHTML =
-                '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
-
-            currentSource = playDistortionDemo(mode);
-
-            // Auto-stop after playback ends
-            playTimeout = setTimeout(() => {
-                isPlaying = false;
-                card.classList.remove('playing');
-                currentSource = null;
-                playBtn.innerHTML =
-                    '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>';
-            }, currentSource.duration + 200);
-        });
+            startPluginLoop();
+        } else {
+            stopPluginLoop();
+        }
     });
 
-    // --- Smooth scroll for anchor links ---
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', (e) => {
-            const targetId = anchor.getAttribute('href');
-            if (targetId === '#') return;
-
-            e.preventDefault();
-            const target = document.querySelector(targetId);
-            if (target) {
-                const offset = 80;
-                const position = target.getBoundingClientRect().top + window.scrollY - offset;
-                window.scrollTo({ top: position, behavior: 'smooth' });
+    // --- Mode buttons (plugin UI) → switch mode + restart if playing ---
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('mode-btn--active'));
+            btn.classList.add('mode-btn--active');
+            activeMode = btn.dataset.mode;
+            if (pluginIsOn) {
+                stopPluginLoop();
+                startPluginLoop();
             }
         });
     });
 
-    // --- Knob interaction (user-controlled) ---
+    // --- Knob interaction (user-controlled, affects live sound) ---
     document.querySelectorAll('.knob').forEach(knob => {
         let isDragging = false;
-        let startY;
-        let startValue;
+        let startY, startValue;
 
         const updateKnob = (value) => {
             value = Math.max(0, Math.min(100, value));
@@ -448,15 +383,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const fillAngle = (value / 100) * 360;
             const indicatorAngle = (value / 100) * 270 - 135;
             if (fill) fill.style.setProperty('--angle', fillAngle + 'deg');
-            if (indicator) {
-                indicator.style.transform = `translateX(-50%) rotate(${indicatorAngle}deg)`;
+            if (indicator) indicator.style.transform = `translateX(-50%) rotate(${indicatorAngle}deg)`;
+
+            // Update knob state for live engine
+            const param = knob.dataset.param;
+            if (param && knobState.hasOwnProperty(param)) {
+                knobState[param] = value;
             }
         };
 
-        // Set initial position from data-value
         updateKnob(parseInt(knob.dataset.value) || 50);
 
-        // Mouse drag
         knob.addEventListener('mousedown', (e) => {
             isDragging = true;
             startY = e.clientY;
@@ -464,46 +401,97 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.cursor = 'ns-resize';
             e.preventDefault();
         });
-
         document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
-            const delta = (startY - e.clientY) * 0.5;
-            updateKnob(startValue + delta);
+            updateKnob(startValue + (startY - e.clientY) * 0.5);
         });
-
         document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                document.body.style.cursor = '';
-            }
+            if (isDragging) { isDragging = false; document.body.style.cursor = ''; }
         });
 
-        // Touch support
         knob.addEventListener('touchstart', (e) => {
             isDragging = true;
             startY = e.touches[0].clientY;
             startValue = parseInt(knob.dataset.value) || 50;
             e.preventDefault();
         }, { passive: false });
-
         document.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
-            const delta = (startY - e.touches[0].clientY) * 0.5;
-            updateKnob(startValue + delta);
+            updateKnob(startValue + (startY - e.touches[0].clientY) * 0.5);
         });
+        document.addEventListener('touchend', () => { if (isDragging) isDragging = false; });
+    });
 
-        document.addEventListener('touchend', () => {
-            if (isDragging) {
-                isDragging = false;
+    // --- Sound card play (uses same engine as plugin, same mode configs) ---
+    document.querySelectorAll('.sound-card').forEach(card => {
+        let isPlaying = false;
+        let playTimeout = null;
+        let cardSource = null;
+
+        card.addEventListener('click', () => {
+            const playBtn = card.querySelector('.sound-card__play');
+            const mode = card.dataset.mode;
+
+            if (isPlaying) {
+                isPlaying = false;
+                card.classList.remove('playing');
+                if (cardSource) { cardSource.stop(); cardSource = null; }
+                if (playTimeout) clearTimeout(playTimeout);
+                playBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>';
+                return;
             }
+
+            // Turn off plugin UI if it's on
+            if (pluginIsOn) {
+                pluginIsOn = false;
+                powerBtn.classList.remove('power-btn--active');
+                pluginUI.classList.remove('plugin-ui--active');
+                pluginUI.classList.add('plugin-ui--inactive');
+                stopPluginLoop();
+            }
+
+            // Stop other cards
+            document.querySelectorAll('.sound-card').forEach(c => {
+                if (c !== card) {
+                    c.classList.remove('playing');
+                    c.querySelector('.sound-card__play').innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>';
+                }
+            });
+            if (currentSource) { currentSource.stop(); currentSource = null; }
+
+            isPlaying = true;
+            card.classList.add('playing');
+            playBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+
+            // Play 2 bars with default knob values for demo
+            cardSource = playLoop(mode, { drive: 65, tone: 50, mix: 80, level: 50 });
+
+            playTimeout = setTimeout(() => {
+                // Play second 2 bars
+                const src2 = playLoop(mode, { drive: 65, tone: 50, mix: 80, level: 50 });
+                const timeout2 = setTimeout(() => {
+                    isPlaying = false;
+                    card.classList.remove('playing');
+                    cardSource = null;
+                    playBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>';
+                }, src2.duration + 100);
+                cardSource = { stop: () => { src2.stop(); clearTimeout(timeout2); } };
+            }, cardSource.duration - 50);
         });
     });
 
-    // --- Mode buttons ---
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('mode-btn--active'));
-            btn.classList.add('mode-btn--active');
+    // --- Smooth scroll for anchor links ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+            const targetId = anchor.getAttribute('href');
+            if (targetId === '#') return;
+            e.preventDefault();
+            const target = document.querySelector(targetId);
+            if (target) {
+                const offset = 80;
+                const position = target.getBoundingClientRect().top + window.scrollY - offset;
+                window.scrollTo({ top: position, behavior: 'smooth' });
+            }
         });
     });
 
