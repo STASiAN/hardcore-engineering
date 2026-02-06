@@ -675,7 +675,7 @@ img {
 
 @keyframes hintBounce {
     0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(4px); }
+    50% { transform: translateX(-6px); }
 }
 
 @keyframes arrowPulse {
