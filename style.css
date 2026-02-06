@@ -519,9 +519,11 @@ img {
     inset: 0;
     border-radius: 50%;
     background: conic-gradient(
+        from 225deg,
         var(--accent) 0deg,
-        var(--accent) calc(var(--value) * 3.6deg),
-        transparent calc(var(--value) * 3.6deg)
+        var(--accent) calc(var(--value) * 2.7deg),
+        transparent calc(var(--value) * 2.7deg),
+        transparent 270deg
     );
     opacity: 0.3;
 }
