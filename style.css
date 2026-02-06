@@ -521,8 +521,8 @@ img {
     background: conic-gradient(
         from 225deg,
         var(--accent) 0deg,
-        var(--accent) calc(var(--value) * 2.7deg),
-        transparent calc(var(--value) * 2.7deg),
+        var(--accent) var(--angle, 0deg),
+        transparent var(--angle, 0deg),
         transparent 270deg
     );
     opacity: 0.3;

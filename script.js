@@ -389,9 +389,10 @@ document.addEventListener('DOMContentLoaded', () => {
             knob.dataset.value = Math.round(value);
             const fill = knob.querySelector('.knob__fill');
             const indicator = knob.querySelector('.knob__indicator');
-            if (fill) fill.style.setProperty('--value', value);
+            const angleDeg = (value / 100) * 270;
+            if (fill) fill.style.setProperty('--angle', angleDeg + 'deg');
             if (indicator) {
-                const rotation = (value / 100) * 270 - 135;
+                const rotation = angleDeg - 135;
                 indicator.style.transform = `translateX(-50%) rotate(${rotation}deg)`;
             }
         };
