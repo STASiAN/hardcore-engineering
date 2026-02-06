@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERDAK — Distortion VST Plugin & Pedal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Nav -->
+    <nav class="nav" id="nav">
+        <div class="nav__inner">
+            <a href="#" class="nav__logo">
+                <span class="logo-icon">⚡</span> PERDAK
+            </a>
+            <ul class="nav__links">
+                <li><a href="#features">Фичи</a></li>
+                <li><a href="#sound">Звук</a></li>
+                <li><a href="#pedal">Педаль</a></li>
+                <li><a href="#pricing">Цены</a></li>
+            </ul>
+            <a href="#pricing" class="btn btn--nav">Купить</a>
+            <button class="nav__burger" id="burger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li><a href="#features">Фичи</a></li>
+            <li><a href="#sound">Звук</a></li>
+            <li><a href="#pedal">Педаль</a></li>
+            <li><a href="#pricing">Цены</a></li>
+            <li><a href="#pricing" class="btn btn--primary">Купить</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero__bg">
+            <div class="hero__glow hero__glow--1"></div>
+            <div class="hero__glow hero__glow--2"></div>
+            <div class="hero__grid"></div>
+        </div>
+        <!-- Plugin UI Mockup -->
+        <div class="hero__plugin">
+            <div class="plugin-ui">
+                <div class="plugin-ui__header">
+                    <span class="plugin-ui__title">PERDAK DISTORTION</span>
+                    <div class="plugin-ui__leds">
+                        <span class="led led--active"></span>
+                        <span class="led"></span>
+                        <span class="led"></span>
+                    </div>
+                </div>
+                <div class="plugin-ui__knobs">
+                    <div class="knob-group">
+                        <div class="knob" data-value="65">
+                            <div class="knob__track">
+                                <div class="knob__fill" style="--value: 65"></div>
+                            </div>
+                            <div class="knob__indicator"></div>
+                        </div>
+                        <span class="knob-label">DRIVE</span>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-value="40">
+                            <div class="knob__track">
+                                <div class="knob__fill" style="--value: 40"></div>
+                            </div>
+                            <div class="knob__indicator"></div>
+                        </div>
+                        <span class="knob-label">TONE</span>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-value="75">
+                            <div class="knob__track">
+                                <div class="knob__fill" style="--value: 75"></div>
+                            </div>
+                            <div class="knob__indicator"></div>
+                        </div>
+                        <span class="knob-label">MIX</span>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-value="50">
+                            <div class="knob__track">
+                                <div class="knob__fill" style="--value: 50"></div>
+                            </div>
+                            <div class="knob__indicator"></div>
+                        </div>
+                        <span class="knob-label">LEVEL</span>
+                    </div>
+                </div>
+                <div class="plugin-ui__modes">
+                    <button class="mode-btn">TUBE</button>
+                    <button class="mode-btn mode-btn--active">FUZZ</button>
+                    <button class="mode-btn">CLIP</button>
+                    <button class="mode-btn">FOLD</button>
+                </div>
+                <div class="plugin-ui__meter">
+                    <div class="meter-bar"><div class="meter-bar__fill"></div></div>
+                    <div class="meter-bar"><div class="meter-bar__fill"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container hero__content">
+            <h1 class="hero__title">
+                <br>
+                Дисторшн,<br>
+                который <span class="gradient-text">рвёт</span><br>
+                всё на части
+            </h1>
+            <p class="hero__subtitle">
+                VST плагин и аналоговая педаль с одним ДНК.<br>
+                От сливочного овердрайва до тотального хаоса.
+            </p>
+            <div class="hero__actions">
+                <a href="#pricing" class="btn btn--primary btn--lg">
+                    <span>Купить за $49</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#sound" class="btn btn--outline btn--lg">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Послушать</span>
+                </a>
+            </div>
+            <div class="hero__stats">
+                <div class="stat">
+                    <span class="stat__number" data-target="12000">0</span>+
+                    <span class="stat__label">Пользователей</span>
+                </div>
+                <div class="stat">
+                    <span class="stat__number" data-target="4.9">0</span>
+                    <span class="stat__label">Рейтинг</span>
+                </div>
+                <div class="stat">
+                    <span class="stat__number" data-target="50">0</span>+
+                    <span class="stat__label">Пресетов</span>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Logos -->
+    <section class="logos">
+        <div class="container">
+            <p class="logos__label">Используют продюсеры и музыканты из</p>
+            <div class="logos__grid">
+                <div class="logo-item">Universal Audio</div>
+                <div class="logo-item">Ableton</div>
+                <div class="logo-item">FL Studio</div>
+                <div class="logo-item">Logic Pro</div>
+                <div class="logo-item">Cubase</div>
+                <div class="logo-item">Reaper</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Возможности</span>
+                <h2 class="section-title">Всё, что нужно для <span class="gradient-text">идеального</span> перегруза</h2>
+                <p class="section-desc">Четыре алгоритма сатурации, моделирование аналоговых схем и бесконечные возможности звукового дизайна</p>
+            </div>
+            <div class="features__grid">
+                <div class="feature-card feature-card--large">
+                    <div class="feature-card__icon">🎛️</div>
+                    <h3>4 режима дисторшна</h3>
+                    <p>Tube, Fuzz, Hard Clip, Wave Fold — от мягкого тепла ламп до агрессивного цифрового разрушения. Каждый режим смоделирован с аналоговой точностью.</p>
+                    <div class="feature-card__visual">
+                        <div class="wave-display">
+                            <svg viewBox="0 0 200 60" class="wave-svg">
+                                <path class="wave-clean" d="M0,30 Q25,5 50,30 Q75,55 100,30 Q125,5 150,30 Q175,55 200,30" />
+                                <path class="wave-dirty" d="M0,30 Q25,8 50,30 Q75,52 100,30 Q125,8 150,30 Q175,52 200,30" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">⚡</div>
+                    <h3>Zero Latency</h3>
+                    <p>Нулевая задержка при обработке. Играй в реальном времени без компромиссов. Оптимизировано под SIMD.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">🎨</div>
+                    <h3>50+ пресетов</h3>
+                    <p>Готовые настройки для рока, металла, электроники, lo-fi и экспериментальной музыки. Делись пресетами с сообществом.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">🔌</div>
+                    <h3>Все форматы</h3>
+                    <p>VST3, AU, AAX — работает в любой DAW на Windows и macOS. Apple Silicon native.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">🎚️</div>
+                    <h3>Встроенный EQ</h3>
+                    <p>3-полосный эквалайзер до и после дисторшна. Фильтры высоких и низких частот для точной настройки тембра.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">🔗</div>
+                    <h3>MIDI-маппинг</h3>
+                    <p>Полная поддержка MIDI CC. Управляй любым параметром с контроллера или автоматизируй в DAW.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-card__icon">🖥️</div>
+                    <h3>Resizable UI</h3>
+                    <p>Масштабируемый интерфейс от 50% до 200%. Идеально на любом мониторе, включая 4K и Retina.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sound Demos -->
+    <section class="sound" id="sound">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Демо</span>
+                <h2 class="section-title">Послушай, как это <span class="gradient-text">звучит</span></h2>
+                <p class="section-desc">Нажми на карточку, чтобы услышать разницу между чистым и обработанным сигналом</p>
+            </div>
+            <div class="sound__grid">
+                <div class="sound-card" data-mode="tube">
+                    <div class="sound-card__waveform">
+                        <div class="waveform-bars">
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="sound-card__info">
+                        <h4>🔥 Tube Overdrive</h4>
+                        <p>Тёплый ламповый перегруз для блюза и классического рока</p>
+                    </div>
+                    <button class="sound-card__play" aria-label="Play">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+                    </button>
+                </div>
+                <div class="sound-card" data-mode="fuzz">
+                    <div class="sound-card__waveform">
+                        <div class="waveform-bars">
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="sound-card__info">
+                        <h4>💀 Fuzz Madness</h4>
+                        <p>Безумный фузз для стоунера и психоделии</p>
+                    </div>
+                    <button class="sound-card__play" aria-label="Play">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+                    </button>
+                </div>
+                <div class="sound-card" data-mode="clip">
+                    <div class="sound-card__waveform">
+                        <div class="waveform-bars">
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="sound-card__info">
+                        <h4>⚡ Hard Clip</h4>
+                        <p>Жёсткий клиппинг для металла и хардкора</p>
+                    </div>
+                    <button class="sound-card__play" aria-label="Play">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+                    </button>
+                </div>
+                <div class="sound-card" data-mode="fold">
+                    <div class="sound-card__waveform">
+                        <div class="waveform-bars">
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="sound-card__info">
+                        <h4>🌀 Wave Fold</h4>
+                        <p>Экспериментальный вейвфолдинг для электроники</p>
+                    </div>
+                    <button class="sound-card__play" aria-label="Play">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pedal Section -->
+    <section class="pedal" id="pedal">
+        <div class="container">
+            <div class="pedal__layout">
+                <div class="pedal__visual">
+                    <div class="pedal-3d">
+                        <div class="pedal-box">
+                            <div class="pedal-box__face pedal-box__face--front">
+                                <div class="pedal-logo">PERDAK</div>
+                                <div class="pedal-knobs-row">
+                                    <div class="pedal-knob">
+                                        <div class="pedal-knob__dial"></div>
+                                        <span>DRIVE</span>
+                                    </div>
+                                    <div class="pedal-knob">
+                                        <div class="pedal-knob__dial"></div>
+                                        <span>TONE</span>
+                                    </div>
+                                    <div class="pedal-knob">
+                                        <div class="pedal-knob__dial"></div>
+                                        <span>LEVEL</span>
+                                    </div>
+                                </div>
+                                <div class="pedal-switch">
+                                    <div class="pedal-switch__btn"></div>
+                                </div>
+                                <div class="pedal-led"></div>
+                                <div class="pedal-jacks">
+                                    <span>IN</span>
+                                    <span>OUT</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pedal__info">
+                    <span class="section-tag">Железо</span>
+                    <h2 class="section-title">Тот же звук.<br><span class="gradient-text">В железе.</span></h2>
+                    <p class="pedal__desc">
+                        Аналоговая педаль PERDAK — это физическое воплощение нашего плагина.
+                        Те же алгоритмы, переведённые в аналоговые схемы на дискретных компонентах.
+                    </p>
+                    <ul class="pedal__specs">
+                        <li>
+                            <span class="spec-icon">🔧</span>
+                            <div>
+                                <strong>True Bypass</strong>
+                                <span>Чистый сигнал без окраски в обходе</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="spec-icon">🔋</span>
+                            <div>
+                                <strong>9V / Батарейка</strong>
+                                <span>Работает от адаптера или батареи 9V</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="spec-icon">🏗️</span>
+                            <div>
+                                <strong>Алюминиевый корпус</strong>
+                                <span>Прочный корпус с порошковым покрытием</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="spec-icon">🎸</span>
+                            <div>
+                                <strong>3 режима перегруза</strong>
+                                <span>Tube, Fuzz и Hard Clip на переключателе</span>
+                            </div>
+                        </li>
+                    </ul>
+                    <a href="#pricing" class="btn btn--primary btn--lg">Предзаказ — $129</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Отзывы</span>
+                <h2 class="section-title">Что говорят <span class="gradient-text">музыканты</span></h2>
+            </div>
+            <div class="testimonials__grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-card__stars">★★★★★</div>
+                    <p>«Это лучший дисторшн-плагин, который я пробовал. Tube-режим настолько реалистичен, что я продал свой настоящий ламповый преамп.»</p>
+                    <div class="testimonial-card__author">
+                        <div class="avatar">АК</div>
+                        <div>
+                            <strong>Алексей К.</strong>
+                            <span>Продюсер, Москва</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-card__stars">★★★★★</div>
+                    <p>«Использую PERDAK на каждом треке. Wave Fold режим — это что-то невероятное для синтезаторов. Звук живой и объёмный.»</p>
+                    <div class="testimonial-card__author">
+                        <div class="avatar">МД</div>
+                        <div>
+                            <strong>Мария Д.</strong>
+                            <span>Электронный музыкант</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-card__stars">★★★★★</div>
+                    <p>«Педаль PERDAK стала центром моего педалборда. Три режима — это три разных педали в одном корпусе. Качество сборки на высоте.»</p>
+                    <div class="testimonial-card__author">
+                        <div class="avatar">ИВ</div>
+                        <div>
+                            <strong>Игорь В.</strong>
+                            <span>Гитарист, группа «Шум»</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Цены</span>
+                <h2 class="section-title">Выбери свой <span class="gradient-text">PERDAK</span></h2>
+                <p class="section-desc">Бесплатные обновления навсегда. 30-дневная гарантия возврата.</p>
+            </div>
+            <div class="pricing__grid">
+                <div class="price-card">
+                    <div class="price-card__header">
+                        <h3>Plugin</h3>
+                        <p>VST3 / AU / AAX</p>
+                    </div>
+                    <div class="price-card__price">
+                        <span class="price-old">$79</span>
+                        <span class="price-current">$49</span>
+                    </div>
+                    <ul class="price-card__features">
+                        <li>✓ Все 4 режима дисторшна</li>
+                        <li>✓ 50+ пресетов</li>
+                        <li>✓ Встроенный EQ</li>
+                        <li>✓ MIDI-маппинг</li>
+                        <li>✓ Windows + macOS</li>
+                        <li>✓ Бесплатные обновления</li>
+                    </ul>
+                    <a href="#" class="btn btn--outline btn--full">Купить плагин</a>
+                </div>
+                <div class="price-card price-card--featured">
+                    <div class="price-card__badge">🔥 Лучшая цена</div>
+                    <div class="price-card__header">
+                        <h3>Bundle</h3>
+                        <p>Plugin + Педаль</p>
+                    </div>
+                    <div class="price-card__price">
+                        <span class="price-old">$208</span>
+                        <span class="price-current">$149</span>
+                    </div>
+                    <ul class="price-card__features">
+                        <li>✓ Всё из Plugin</li>
+                        <li>✓ Аналоговая педаль PERDAK</li>
+                        <li>✓ Эксклюзивные пресеты</li>
+                        <li>✓ Приоритетная поддержка</li>
+                        <li>✓ True Bypass</li>
+                        <li>✓ Бесплатная доставка</li>
+                    </ul>
+                    <a href="#" class="btn btn--primary btn--full">Купить бандл</a>
+                </div>
+                <div class="price-card">
+                    <div class="price-card__header">
+                        <h3>Педаль</h3>
+                        <p>Аналоговая педаль</p>
+                    </div>
+                    <div class="price-card__price">
+                        <span class="price-old">$159</span>
+                        <span class="price-current">$129</span>
+                    </div>
+                    <ul class="price-card__features">
+                        <li>✓ 3 режима перегруза</li>
+                        <li>✓ True Bypass</li>
+                        <li>✓ Алюминиевый корпус</li>
+                        <li>✓ 9V адаптер в комплекте</li>
+                        <li>✓ 2 года гарантии</li>
+                        <li>✓ Бесплатная доставка</li>
+                    </ul>
+                    <a href="#" class="btn btn--outline btn--full">Предзаказ</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta__inner">
+                <div class="cta__glow"></div>
+                <h2>Готов добавить хаоса в свой звук?</h2>
+                <p>Скачай бесплатную демо-версию и оцени возможности PERDAK без ограничений по времени</p>
+                <div class="cta__actions">
+                    <a href="#" class="btn btn--primary btn--lg">Скачать демо бесплатно</a>
+                    <a href="#pricing" class="btn btn--outline btn--lg">Смотреть цены</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__brand">
+                    <a href="#" class="nav__logo"><span class="logo-icon">⚡</span> PERDAK</a>
+                    <p>Дисторшн плагин и педаль для тех, кто не боится громкого звука.</p>
+                    <div class="footer__social">
+                        <a href="#" aria-label="YouTube">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31.5 31.5 0 000 12a31.5 31.5 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31.5 31.5 0 0024 12a31.5 31.5 0 00-.5-5.8zM9.5 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+                        </a>
+                        <a href="#" aria-label="Telegram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.53 8.15l-1.83 8.63c-.14.62-.5.77-1.01.48l-2.8-2.06-1.35 1.3c-.15.15-.28.28-.57.28l.2-2.84 5.17-4.67c.22-.2-.05-.31-.35-.12l-6.39 4.02-2.75-.86c-.6-.19-.61-.6.12-.89l10.74-4.14c.5-.18.93.12.77.87z"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer__links">
+                    <h4>Продукт</h4>
+                    <ul>
+                        <li><a href="#features">Возможности</a></li>
+                        <li><a href="#sound">Демо</a></li>
+                        <li><a href="#pricing">Цены</a></li>
+                        <li><a href="#">Документация</a></li>
+                    </ul>
+                </div>
+                <div class="footer__links">
+                    <h4>Поддержка</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Связаться с нами</a></li>
+                        <li><a href="#">Статус системы</a></li>
+                        <li><a href="#">Возврат</a></li>
+                    </ul>
+                </div>
+                <div class="footer__links">
+                    <h4>Компания</h4>
+                    <ul>
+                        <li><a href="#">О нас</a></li>
+                        <li><a href="#">Блог</a></li>
+                        <li><a href="#">Пресс-кит</a></li>
+                        <li><a href="#">Карьера</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>© 2026 PERDAK Audio. Все права защищены.</p>
+                <div class="footer__legal">
+                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#">Условия использования</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
