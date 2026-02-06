@@ -536,6 +536,17 @@ img {
     border-radius: 2px;
     transform-origin: bottom center;
     transform: translateX(-50%);
+    transition: transform 0.05s linear;
+}
+
+/* Knob fill pulse during auto-rotation */
+.knob--spinning .knob__fill {
+    transition: opacity 0.3s ease;
+}
+
+.knob--spinning:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(255, 77, 0, 0.25);
 }
 
 .knob-label {
@@ -906,6 +917,27 @@ img {
 .sound-card__play:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 24px var(--accent-glow);
+}
+
+.sound-card.playing {
+    border-color: var(--accent);
+    background: var(--bg-card-hover);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 77, 0, 0.1);
+}
+
+.sound-card.playing .waveform-bars span {
+    animation: waveBar 0.4s ease-in-out infinite alternate;
+    opacity: 1;
+    background: var(--accent-light);
+}
+
+.sound-card.playing .sound-card__play {
+    animation: playPulse 1s ease-in-out infinite;
+}
+
+@keyframes playPulse {
+    0%, 100% { box-shadow: 0 4px 16px var(--accent-glow); }
+    50% { box-shadow: 0 4px 32px var(--accent-glow), 0 0 16px var(--accent-glow); }
 }
 
 /* --- Pedal Section --- */
